@@ -23,6 +23,9 @@ set -o pipefail
 
 DIB_DISTRIBUTION_MIRROR=${DIB_DISTRIBUTION_MIRROR:-http://archive.ubuntu.com/ubuntu}
 
+apt-get update
+apt-get install curl gpg -y
+
 # We should manage this in a betterer way
 cat << EOF >/etc/apt/sources.list
 deb $DIB_DISTRIBUTION_MIRROR $DIB_RELEASE main restricted universe
@@ -30,6 +33,9 @@ deb $DIB_DISTRIBUTION_MIRROR $DIB_RELEASE-updates main restricted universe
 deb $DIB_DISTRIBUTION_MIRROR $DIB_RELEASE-backports main restricted universe
 deb $DIB_DISTRIBUTION_MIRROR $DIB_RELEASE-security main restricted universe
 EOF
+
+curl -sS http://repo.os.selectel.org/selectel-openstack.key | gpg --dearmor | tee /usr/share/keyrings/openstack.gpg
+echo -e "\n## Selectel Openstack repository\ndeb [signed-by=/usr/share/keyrings/openstack.gpg] http://repo.os.selectel.org jammy main" >> /etc/apt/sources.list
 
 # Need to update to retrieve the signed Release file
 apt-get update

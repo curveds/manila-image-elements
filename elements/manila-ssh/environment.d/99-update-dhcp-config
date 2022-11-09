@@ -1,2 +1,0 @@
-#!/bin/bash
-export DIB_DHCP_TIMEOUT=${DIB_DHCP_TIMEOUT:-300}

@@ -27,9 +27,6 @@ MANILA_IMG_NAME=${MANILA_IMG_NAME:-"manila-service-image"}
 MANILA_SHARE_PROTO=${MANILA_SHARE_PROTO:-"default"}
 MANILA_DISTRO=${MANILA_DISTRO:-"ubuntu"}
 
-#Misc settings
-DHCP_TIMEOUT=${DHCP_TIMEOUT:-"300"}
-
 # Path to elements
 SCRIPT_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -50,7 +47,6 @@ export DIB_RELEASE=$MANILA_IMG_OS_VER
 export DIB_MANILA_USER_USERNAME=$MANILA_USER
 export DIB_MANILA_USER_PASSWORD=$MANILA_PASSWORD
 export DIB_MANILA_USER_AUTHORIZED_KEYS=$MANILA_USER_AUTHORIZED_KEYS
-export DIB_DHCP_TIMEOUT=$DHCP_TIMEOUT
 
 # CLI
 # ---
@@ -115,8 +111,8 @@ parse_arguments() {
 # Verify configuration
 # --------------------
 configure() {
-    REQUIRED_ELEMENTS="manila-ssh vm $MANILA_IMG_OS dhcp-all-interfaces"
-    IMAGE_FORMAT="qcow2"
+    REQUIRED_ELEMENTS="manila-ssh vm $MANILA_IMG_OS install-static cloud-init"
+    IMAGE_FORMAT="raw"
     OPTIONAL_ELEMENTS=
     OPTIONAL_DIB_ARGS=
 
@@ -167,7 +163,7 @@ is_installed() {
 need_required_packages() {
     case "$platform" in
         "ubuntu")
-            package_list="qemu kpartx debootstrap"
+            package_list="qemu kpartx debootstrap cloud-init"
             ;;
         "fedora")
             package_list="qemu-img kpartx debootstrap"
